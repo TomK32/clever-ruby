@@ -281,6 +281,9 @@ module Clever
         rcode, rbody)
     end
 
+    unless error.is_a? Hash
+      error = {message: error, param: ''}
+    end
     case rcode
     when 400, 404 then
       fail invalid_request_error error, rcode, rbody, error_obj
@@ -295,11 +298,7 @@ module Clever
   # @api private
   # @return [InvalidRequestError]
   def self.invalid_request_error(error, rcode, rbody, error_obj)
-    if error.is_a? Hash
-      InvalidRequestError.new error[:message], error[:param], rcode, rbody, error_obj
-    else
-      InvalidRequestError.new error, '', rcode, rbody, error_obj
-    end
+    InvalidRequestError.new error[:message], error[:param], rcode, rbody, error_obj
   end
 
   # Generate an AuthenticationError
